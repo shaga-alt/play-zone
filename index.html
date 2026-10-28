@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayZone Football Career</title>
+
+<style>
+:root {
+  --bg: #07131f;
+  --panel: #10243a;
+  --line: #2d4963;
+  --text: #f5f8fc;
+  --muted: #a9bbce;
+  --green: #48ee9b;
+  --gold: #ffd166;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top right, #173958 0, #07131f 48%);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  padding: 18px 14px;
+  text-align: center;
+  background: linear-gradient(120deg, #064c39, #142b50);
+  border-bottom: 1px solid #36536e;
+}
+
+.logo {
+  font-size: clamp(27px, 6vw, 42px);
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: var(--green);
+}
+
+header p {
+  margin: 6px 0 0;
+  color: #d2e2ed;
+}
+
+main {
+  max-width: 1050px;
+  margin: auto;
+  padding: 15px;
+}
+
+.topstats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.statbox {
+  background: #10243a;
+  border: 1px solid var(--line);
+  padding: 10px 8px;
+  border-radius: 11px;
+  text-align: center;
+}
+
+.statbox small {
+  display: block;
+  color: var(--muted);
+}
+
+.statbox strong {
+  display: block;
+  color: var(--gold);
+  font-size: 1.2rem;
+  margin-top: 4px;
+}
+
+nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin: 14px 0;
+}
+
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 12px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.navbtn {
+  background: #1a3048;
+  color: #e9f2fa;
+  border: 1px solid #304c67;
+}
+
+.navbtn.active,
+.primary {
+  background: var(--green);
+  color: #052319;
+}
+
+.secondary {
+  background: #2b4560;
+  color: white;
+}
+
+.danger {
+  background: #682d3b;
+  color: white;
+}
+
+.screen {
+  display: none;
+  background: rgba(16, 36, 58, .97);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 17px;
+  min-height: 260px;
+}
+
+.screen.active {
+  display: block;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 1.45rem;
+}
+
+h3 {
+  margin: 15px 0 8px;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 10px;
+}
+
+.tile {
+  background: #172e47;
+  border: 1px solid #2b4964;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.tile .emoji {
+  font-size: 27px;
+}
+
+.tile h3 {
+  margin: 7px 0;
+}
+
+.tile p {
+  font-size: .9rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.tile button {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.row {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+input,
+select {
+  padding: 11px;
+  border-radius: 8px;
+  border: 1px solid #47627b;
+  background: #071522;
+  color: white;
+  font: inherit;
+  min-height: 42px;
+}
+
+.tag {
+  display: inline-block;
+  background: #213d57;
+  color: #d9e8f5;
+  border-radius: 99px;
+  padding: 4px 8px;
+  font-size: .78rem;
+}
+
+.notice {
+  padding: 11px 13px;
+  background: #102f2a;
+  border: 1px solid #28634e;
+  border-radius: 10px;
+  color: #d9ffec;
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+
+/* FOOTBALL PITCH */
+
+.pitchwrap {
+  background: #07131d;
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid #29455f;
+}
+
+.pitch {
+  position: relative;
+  height: clamp(280px, 58vw, 450px);
+  max-height: 450px;
+  overflow: hidden;
+  border: 3px solid #e7f4e9;
+  border-radius: 5px;
+  background: repeating-linear-gradient(
+    0deg,
+    #217747 0 35px,
+    #288451 35px 70px
+  );
+}
+
+.pitch:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 2px solid #ffffffaa;
+}
+
+.centerCircle {
+  position: absolute;
+  left: calc(50% - 44px);
+  top: calc(50% - 44px);
+  width: 88px;
+  height: 88px;
+  border: 2px solid #ffffffaa;
+  border-radius: 50%;
+}
+
+.penaltyBox {
+  position: absolute;
+  left: 23%;
+  right: 23%;
+  top: 0;
+  height: 68px;
+  border: 2px solid #ffffffbb;
+  border-top: 0;
+}
+
+.goalNet {
+  position: absolute;
+  left: 37%;
+  right: 37%;
+  top: 0;
+  height: 28px;
+  border: 4px solid white;
+  border-top: 0;
+}
+
+.playerDot {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px #0006;
+  transform: translate(-50%, -50%);
+  user-select: none;
+}
+
+.homeDot {
+  background: #0879e8;
+}
+
+.awayDot {
+  background: #d94747;
+}
+
+.ballDot {
+  position: absolute;
+  font-size: 22px;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  transition: left .12s linear, top .12s linear;
+}
+
+.matchbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  background: #0a1927;
+  padding: 10px;
+  border-radius: 9px;
+  margin-bottom: 10px;
+}
+
+.score {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+.matchmessage {
+  min-height: 26px;
+  text-align: center;
+  margin: 10px;
+  font-weight: bold;
+}
+
+.controlpad {
+  display: grid;
+  grid-template-columns: repeat(3, 48px);
+  gap: 6px;
+  justify-content: center;
+  margin: 12px auto;
+}
+
+.controlpad button {
+  min-height: 46px;
+  padding: 8px;
+  background: #2b4560;
+  color: white;
+}
+
+.controlpad .blank {
+  visibility: hidden;
+}
+
+.matchactions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* PLAYERS */
+
+.list {
+  display: grid;
+  gap: 8px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #172e47;
+  border: 1px solid #2b4964;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.face {
+  font-size: 27px;
+}
+
+.personmain {
+  flex: 1;
+  min-width: 0;
+}
+
+.personmain strong {
+  display: block;
+}
+
+.personmain small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.person button {
+  padding: 9px;
+  font-size: .88rem;
+}
+
+.meter {
+  height: 8px;
+  background: #263d54;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+}
+
+.kitpreview {
+  height: 115px;
+  max-width: 210px;
+  margin: 10px auto;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    #0879e8 0 35%,
+    #fff 35% 65%,
+    #0879e8 65%
+  );
+  clip-path: polygon(
+    20% 0,38% 0,43% 12%,57% 12%,62% 0,
+    80% 0,100% 25%,83% 40%,75% 30%,
+    75% 100%,25% 100%,25% 30%,17% 40%,0 25%
+  );
+}
+
+.footer {
+  text-align: center;
+  color: #849ab0;
+  padding: 20px 10px;
+  font-size: .85rem;
+}
+
+@media(max-width:520px) {
+  main {
+    padding: 10px;
+  }
+
+  .topstats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .screen {
+    padding: 13px;
+  }
+
+  .person {
+    flex-wrap: wrap;
+  }
+
+  .person button {
+    flex: 1;
+  }
+
+  .score {
+    font-size: 1.25rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">PLAY<span>ZONE</span> ⚽</div>
+  <p>Football Career • Club • Matches • Transfers • Stadium</p>
+</header>
+
+<main>
+
+<div class="topstats">
+  <div class="statbox">
+    <small>🪙 Coins</small>
+    <strong id="coinsStat">1,500</strong>
+  </div>
+
+  <div class="statbox">
+    <small>🏆 Trophies</small>
+    <strong id="trophyStat">0</strong>
+  </div>
+
+  <div class="statbox">
+    <small>⚽ Matches</small>
+    <strong id="playedStat">0</strong>
+  </div>
+
+  <div class="statbox">
+    <small>⭐ Team rating</small>
+    <strong id="ratingStat">62</strong>
+  </div>
+</div>
+
+<nav aria-label="Game menu">
+  <button class="navbtn active" data-screen="home">🏠 Club Home</button>
+  <button class="navbtn" data-screen="match">⚽ Play Match</button>
+  <button class="navbtn" data-screen="squad">👥 Squad</button>
+  <button class="navbtn" data-screen="market">🔄 Transfers</button>
+  <button class="navbtn" data-screen="tactics">🧠 Tactics</button>
+  <button class="navbtn" data-screen="stadium">🏟️ Stadium</button>
+  <button class="navbtn" data-screen="customize">👕 Customize</button>
+  <button class="navbtn" data-screen="settings">⚙️ Settings</button>
+</nav>
+
+<!-- CLUB HOME -->
+
+<section class="screen active" id="home">
+
+  <div class="notice">
+    Welcome to your football career! Use the menu to visit each feature.
+    This is an original 2D browser game inspired by football-management
+    games, not the official DLS game.
+  </div>
+
+  <h2 id="clubTitle">Shama United</h2>
+
+  <p class="muted">
+    Build a squad, play matches, sign players, upgrade your stadium
+    and collect trophies.
+  </p>
+
+  <div class="row">
+    <label for="clubInput">Club name</label>
+    <input id="clubInput" maxlength="24" placeholder="Enter your club name">
+    <button class="primary" id="saveClub">Save name</button>
+  </div>
+
+  <div class="grid" style="margin-top:15px">
+
+    <div class="tile">
+      <div class="emoji">⚽</div>
+      <h3>Career Match</h3>
+      <p>Play a match using the on-screen controls or your keyboard.</p>
+      <button class="primary" data-go="match">Play now</button>
+    </div>
+
+    <div class="tile">
+      <div class="emoji">🔄</div>
+      <h3>Transfer Market</h3>
+      <p>Sign new players to increase your squad rating.</p>
+      <button class="primary" data-go="market">Find players</button>
+    </div>
+
+    <div class="tile">
+      <div class="emoji">🏟️</div>
+      <h3>Build Your Stadium</h3>
+      <p>Upgrade capacity and earn a better match reward.</p>
+      <button class="primary" data-go="stadium">Upgrade stadium</button>
+    </div>
+
+    <div class="tile">
+      <div class="emoji">🏆</div>
+      <h3>Competition</h3>
+      <p>Win matches to earn coins and trophies.</p>
+      <span class="tag">Career mode</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- MATCH -->
+
+<section class="screen" id="match">
+
+  <h2>⚽ Match Day</h2>
+
+  <p class="muted">
+    Move the blue player with WASD or arrow keys.
+    On mobile, use the arrow pad.
+    Tap Shoot to kick toward goal.
+    Score more than the red team before time runs out.
+  </p>
+
+  <div class="pitchwrap">
+
+    <div class="matchbar">
+      <div>
+        <span id="homeName">Shama United</span>
+        <span class="score" id="score">0 - 0</span>
+        <span id="awayName">City FC</span>
+      </div>
+
+      <strong id="clock">60s</strong>
+    </div>
+
+    <div class="pitch" id="pitch" aria-label="Football pitch">
+      <div class="centerCircle"></div>
+      <div class="penaltyBox"></div>
+      <div class="goalNet"></div>
+      <div class="players" id="players"></div>
+      <div class="ballDot" id="ballDot">⚽</div>
+    </div>
+
+  </div>
+
+  <div class="matchmessage" id="matchMessage" aria-live="polite">
+    Press Start Match to kick off.
+  </div>
+
+  <div class="controlpad">
+    <button class="blank" tabindex="-1"> </button>
+    <button data-move="up" aria-label="Move up">⬆️</button>
+    <button class="blank" tabindex="-1"> </button>
+
+    <button data-move="left" aria-label="Move left">⬅️</button>
+    <button data-move="down" aria-label="Move down">⬇️</button>
+    <button data-move="right" aria-label="Move right">➡️</button>
+  </div>
+
+  <div class="matchactions">
+    <button class="primary" id="startMatch">▶ Start Match</button>
+    <button class="primary" id="shootBtn">🥅 Shoot</button>
+    <button class="secondary" id="passBtn">↗ Pass</button>
+    <button class="secondary" id="restartMatch">Restart</button>
+  </div>
+
+  <p class="small">
+    Tip: get near the ball, then press Shoot.
+    Match progress and rewards are saved in this browser.
+  </p>
+
+</section>
+
+<!-- SQUAD -->
+
+<section class="screen" id="squad">
+  <h2>👥 Your Squad</h2>
+  <p class="muted">Your current players and ratings. Squad strength affects match chances.</p>
+  <div id="squadList" class="list"></div>
+</section>
+
+<!-- TRANSFERS -->
+
+<section class="screen" id="market">
+  <h2>🔄 Transfer Market</h2>
+  <p class="muted">Use coins to sign players. Each market player can only be signed once.</p>
+  <div id="marketList" class="list"></div>
+</section>
+
+<!-- TACTICS -->
+
+<section class="screen" id="tactics">
+
+  <h2>🧠 Tactics & Formation</h2>
+
+  <p class="muted">
+    Choose a formation and playing style.
+    These settings change your team's match bonuses.
+  </p>
+
+  <div class="row">
+    <label for="formation">Formation</label>
+    <select id="formation">
+      <option value="balanced">4-3-3 Balanced</option>
+      <option value="attack">3-4-3 Attacking</option>
+      <option value="defence">5-3-2 Defensive</option>
+    </select>
+  </div>
+
+  <div class="row" style="margin-top:12px">
+    <label for="style">Playing style</label>
+    <select id="style">
+      <option value="normal">Balanced</option>
+      <option value="press">High Press</option>
+      <option value="counter">Counter Attack</option>
+      <option value="possession">Possession</option>
+    </select>
+  </div>
+
+  <div class="tile" style="margin-top:15px">
+    <h3>Current tactical effect</h3>
+    <p id="tacticText">Balanced team with no special bonus.</p>
+  </div>
+
+  <button class="primary" id="saveTactics">Save Tactics</button>
+
+</section>
+
+<!-- STADIUM -->
+
+<section class="screen" id="stadium">
+
+  <h2>🏟️ Stadium Builder</h2>
+
+  <p class="muted">
+    Upgrade your stadium to increase match rewards.
+    Each upgrade costs coins.
+  </p>
+
+  <div class="grid">
+
+    <div class="tile">
+      <div class="emoji">🏟️</div>
+      <h3 id="stadiumName">Community Ground</h3>
+      <p>Capacity: <strong id="capacity">2,000</strong></p>
+      <p>Upgrade level: <strong id="stadiumLevel">1</strong></p>
+      <button class="primary" id="upgradeStadium">Upgrade — 500 coins</button>
+    </div>
+
+    <div class="tile">
+      <div class="emoji">💰</div>
+      <h3>Match Income</h3>
+      <p>Win rewards improve with your stadium.</p>
+      <div class="stat" id="income">150 coins</div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CUSTOMIZATION -->
+
+<section class="screen" id="customize">
+
+  <h2>👕 Club Customization</h2>
+
+  <p class="muted">
+    Choose a kit colour and club badge.
+    Your selection changes the look of your players on the pitch.
+  </p>
+
+  <div class="kitpreview" id="kitPreview"></div>
+
+  <div class="row">
+    <label for="kitColor">Kit colour</label>
+
+    <select id="kitColor">
+      <option value="#0879e8">Blue</option>
+      <option value="#e53935">Red</option>
+      <option value="#f0c419">Yellow</option>
+      <option value="#7b42c4">Purple</option>
+      <option value="#f5f5f5">White</option>
+      <option value="#111111">Black</option>
+    </select>
+  </div>
+
+  <div class="row" style="margin-top:12px">
+    <label for="badge">Club badge</label>
+
+    <select id="badge">
+      <option>🦁</option>
+      <option>🐺</option>
+      <option>🦅</option>
+      <option>🐉</option>
+      <option>⭐</option>
+      <option>🔥</option>
+    </select>
+
+    <span id="badgePreview" style="font-size:30px">🦁</span>
+  </div>
+
+  <button class="primary" id="saveKit" style="margin-top:12px">Save Kit</button>
+  <p id="kitMessage" class="muted" aria-live="polite"></p>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section class="screen" id="settings">
+
+  <h2>⚙️ Settings & Save Data</h2>
+
+  <p class="muted">
+    Your career saves locally in this browser.
+    Clearing browser data may erase it.
+    Resetting will delete your club progress from this game.
+  </p>
+
+  <div class="tile">
+    <h3>Game settings</h3>
+
+    <div class="row">
+      <label for="difficulty">Match difficulty</label>
+
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+
+    <p class="muted">Difficulty affects how often the opponent scores.</p>
+  </div>
+
+  <div class="tile" style="margin-top:12px">
+    <h3>Reset career</h3>
+    <p>This resets coins, squad purchases, trophies, stadium upgrades and club settings.</p>
+    <button class="danger" id="resetAll">Delete all progress and start again</button>
+  </div>
+
+  <p id="settingsMessage" class="muted" aria-live="polite"></p>
+
+</section>
+
+</main>
+
+<div class="footer">
+  PlayZone Football Career • Original fan-made browser game • Not affiliated with Dream League Soccer
+</div>
+
+<script>
+(() => {
+
+const $ = id => document.getElementById(id);
+
+const defaultState = () => ({
+  club: "Shama United",
+  coins: 1500,
+  trophies: 0,
+  played: 0,
+
+  squad: [
+    {name:"A. Shama",pos:"ST",rating:66,emoji:"⚡"},
+    {name:"J. Mugenzi",pos:"CM",rating:64,emoji:"🎯"},
+    {name:"D. Niyonzima",pos:"CB",rating:62,emoji:"🛡️"},
+    {name:"P. Uwase",pos:"GK",rating:60,emoji:"🧤"},
+    {name:"K. Habimana",pos:"LW",rating:61,emoji:"🔥"}
+  ],
+
+  bought: [],
+  formation: "balanced",
+  style: "normal",
+  stadium: 1,
+  kit: "#0879e8",
+  badge: "🦁",
+  difficulty: "normal"
+});
+
+const market = [
+  {name:"K. Mbappe",pos:"ST",rating:91,price:850,emoji:"⚡"},
+  {name:"E. Haaland",pos:"ST",rating:90,price:800,emoji:"🎯"},
+  {name:"C. Ronaldo",pos:"ST",rating:89,price:950,emoji:"🐐"},
+  {name:"L. Messi",pos:"RW",rating:90,price:900,emoji:"🌟"},
+  {name:"J. Bellingham",pos:"CM",rating:88,price:700,emoji:"⭐"},
+  {name:"K. De Bruyne",pos:"CM",rating:89,price:750,emoji:"🎩"},
+  {name:"V. van Dijk",pos:"CB",rating:88,price:700,emoji:"🛡️"},
+  {name:"A. Becker",pos:"GK",rating:87,price:600,emoji:"🧤"},
+  {name:"V. Junior",pos:"LW",rating:89,price:750,emoji:"🔥"},
+  {name:"M. Salah",pos:"RW",rating:88,price:700,emoji:"👑"}
+];
+
+let state = loadState();
+
+let match = {
+  active:false,
+  over:false,
+  home:0,
+  away:0,
+  seconds:60,
+  clockId:null,
+  player:{x:50,y:70},
+  ball:{x:50,y:78},
+  opponents:[],
+  lastReward:0
+};
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem("playzoneCareerV1"));
+
+    if (s && Array.isArray(s.squad)) {
+      return {...defaultState(), ...s};
+    }
+  } catch(e) {}
+
+  return defaultState();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem("playzoneCareerV1", JSON.stringify(state));
+  } catch(e) {}
+}
+
+function avgRating() {
+  return Math.round(
+    state.squad.reduce((a,p) => a + p.rating, 0) /
+    Math.max(1, state.squad.length)
+  );
+}
+
+function go(id) {
+  document.querySelectorAll(".screen").forEach(s => {
+    s.classList.toggle("active", s.id === id);
+  });
+
+  document.querySelectorAll(".navbtn").forEach(b => {
+    b.classList.toggle("active", b.dataset.screen === id);
+  });
+
+  if (id === "match") drawPitch();
+}
+
+document.querySelectorAll(".navbtn").forEach(b => {
+  b.addEventListener("click", () => go(b.dataset.screen));
+});
+
+document.querySelectorAll("[data-go]").forEach(b => {
+  b.addEventListener("click", () => go(b.dataset.go));
+});
+
+function updateStats() {
+
+  $("coinsStat").textContent = state.coins.toLocaleString();
+  $("trophyStat").textContent = state.trophies;
+  $("playedStat").textContent = state.played;
+  $("ratingStat").textContent = avgRating();
+
+  $("clubTitle").textContent = state.badge + " " + state.club;
+  $("homeName").textContent = state.club;
+
+  $("capacity").textContent =
+    (2000 + (state.stadium - 1) * 2500).toLocaleString();
+
+  $("stadiumLevel").textContent = state.stadium;
+
+  $("stadiumName").textContent =
+    ["","Community Ground","Town Stadium","City Arena",
+     "National Stadium","Champions Park"][Math.min(state.stadium,5)]
+    || "Elite Stadium";
+
+  $("income").textContent =
+    (150 + (state.stadium - 1) * 75) + " coins";
+
+  $("upgradeStadium").textContent =
+    "Upgrade — " + stadiumCost() + " coins";
+
+  $("upgradeStadium").disabled =
+    state.coins < stadiumCost() || state.stadium >= 5;
+
+  $("clubInput").value = state.club;
+  $("formation").value = state.formation;
+  $("style").value = state.style;
+  $("kitColor").value = state.kit;
+  $("badge").value = state.badge;
+  $("badgePreview").textContent = state.badge;
+
+  $("kitPreview").style.background =
+    `linear-gradient(90deg,${state.kit} 0 35%,#f5f5f5 35% 65%,${state.kit} 65%)`;
+
+  $("pitch").style.background =
+    "repeating-linear-gradient(0deg,#217747 0 35px,#288451 35px 70px)";
+
+  $("tacticText").textContent =
+    ({
+      balanced:"Balanced 4-3-3. A steady approach in attack and defence.",
+      attack:"Attacking 3-4-3. More chances to score, but you can concede more.",
+      defence:"Defensive 5-3-2. Harder for opponents to score."
+    })[state.formation] + " " +
+    ({
+      normal:"Balanced style.",
+      press:"High press: aggressive pressure.",
+      counter:"Counter attack: quick breaks.",
+      possession:"Possession: patient passing."
+    })[state.style];
+}
+
+function renderSquad() {
+
+  $("squadList").innerHTML = "";
+
+  state.squad.forEach(p => {
+
+    const d = document.createElement("div");
+    d.className = "person";
+
+    d.innerHTML = `
+      <div class="face">${p.emoji || "⚽"}</div>
+
+      <div class="personmain">
+        <strong>${p.name} <span class="tag">${p.pos}</span></strong>
+        <small>Rating ${p.rating}</small>
+
+        <div class="meter">
+          <span style="width:${Math.min(100,p.rating)}%"></span>
+        </div>
+      </div>
+    `;
+
+    $("squadList").appendChild(d);
+  });
+}
+
+function renderMarket() {
+
+  $("marketList").innerHTML = "";
+
+  market.forEach((p,i) => {
+
+    const owned = state.bought.includes(i);
+    const d = document.createElement("div");
+
+    d.className = "person";
+
+    d.innerHTML = `
+      <div class="face">${p.emoji}</div>
+
+      <div class="personmain">
+        <strong>${p.name} <span class="tag">${p.pos}</span></strong>
+
+        <small>
+          Rating ${p.rating} · Price ${p.price} coins
+        </small>
+
+        <div class="meter">
+          <span style="width:${p.rating}%"></span>
+        </div>
+      </div>
+
+      <button class="${owned ? "secondary" : "primary"}">
+        ${owned ? "Signed" : state.coins < p.price ? "Need coins" : "Sign"}
+      </button>
+    `;
+
+    const btn = d.querySelector("button");
+
+    btn.disabled = owned || state.coins < p.price;
+
+    if (!btn.disabled) {
+      btn.addEventListener("click", () => {
+        state.coins -= p.price;
+        state.bought.push(i);
+
+        state.squad.push({
+          name:p.name,
+          pos:p.pos,
+          rating:p.rating,
+          emoji:p.emoji
+        });
+
+        saveState();
+        renderAll();
+      });
+    }
+
+    $("marketList").appendChild(d);
+  });
+}
+
+function renderAll() {
+  updateStats();
+  renderSquad();
+  renderMarket();
+  drawPitch();
+}
+
+/* CLUB NAME */
+
+$("saveClub").addEventListener("click", () => {
+
+  const v = $("clubInput").value.trim();
+
+  if (!v) {
+    alert("Please enter a club name.");
+    return;
+  }
+
+  state.club = v.slice(0,24);
+
+  saveState();
+  updateStats();
+
+  $("matchMessage").textContent = "Club name saved!";
+});
+
+/* TACTICS */
+
+$("saveTactics").addEventListener("click", () => {
+
+  state.formation = $("formation").value;
+  state.style = $("style").value;
+
+  saveState();
+  updateStats();
+
+  alert("Tactics saved!");
+});
+
+/* KIT AND BADGE */
+
+$("kitColor").addEventListener("change", () => {
+
+  const color = $("kitColor").value;
+
+  $("kitPreview").style.background =
+    `linear-gradient(90deg,${color} 0 35%,#f5f5f5 35% 65%,${color} 65%)`;
+});
+
+$("badge").addEventListener("change", () => {
+  $("badgePreview").textContent = $("badge").value;
+});
+
+$("saveKit").addEventListener("click", () => {
+
+  state.kit = $("kitColor").value;
+  state.badge = $("badge").value;
+
+  saveState();
+  updateStats();
+
+  $("kitMessage").textContent = "Kit and badge saved!";
+
+  drawPitch();
+});
+
+/* STADIUM */
+
+function stadiumCost() {
+  return state.stadium * 500;
+}
+
+$("upgradeStadium").addEventListener("click", () => {
+
+  const cost = stadiumCost();
+
+  if (state.stadium >= 5 || state.coins < cost) return;
+
+  state.coins -= cost;
+  state.stadium++;
+
+  saveState();
+  renderAll();
+});
+
+/* RESET CAREER */
+
+$("resetAll").addEventListener("click", () => {
+
+  if (!confirm("Delete all PlayZone career progress? This cannot be undone.")) {
+    return;
+  }
+
+  if (match.clockId) clearInterval(match.clockId);
+
+  state = defaultState();
+
+  saveState();
+  resetMatch();
+  renderAll();
+
+  $("settingsMessage").textContent =
+    "Career reset. Your new club is ready.";
+
+  go("home");
+});
+
+/* MATCH ENGINE */
+
+function randomOpponents() {
+
+  return Array.from({length:4}, () => ({
+    x:18 + Math.random() * 64,
+    y:18 + Math.random() * 38
+  }));
+}
+
+function drawPitch() {
+
+  const pitch = $("pitch");
+
+  pitch.querySelectorAll(".playerDot").forEach(n => n.remove());
+
+  const player = document.createElement("div");
+
+  player.className = "playerDot homeDot";
+  player.id = "controlledPlayer";
+  player.textContent = "👤";
+  player.style.left = match.player.x + "%";
+  player.style.top = match.player.y + "%";
+
+  pitch.appendChild(player);
+
+  const homePositions = [
+    {x:28,y:62},
+    {x:72,y:62},
+    {x:38,y:47},
+    {x:62,y:47}
+  ];
+
+  homePositions.forEach((pos,i) => {
+
+    const el = document.createElement("div");
+
+    el.className = "playerDot homeDot";
+    el.textContent = ["⚽","⚽","⚽","🛡️"][i];
+    el.style.left = pos.x + "%";
+    el.style.top = pos.y + "%";
+
+    pitch.appendChild(el);
+  });
+
+  if (!match.opponents.length) {
+    match.opponents = randomOpponents();
+  }
+
+  match.opponents.forEach(pos => {
+
+    const el = document.createElement("div");
+
+    el.className = "playerDot awayDot";
+    el.textContent = "•";
+    el.style.left = pos.x + "%";
+    el.style.top = pos.y + "%";
+
+    pitch.appendChild(el);
+  });
+
+  $("ballDot").style.left = match.ball.x + "%";
+  $("ballDot").style.top = match.ball.y + "%";
+}
+
+function setMessage(s) {
+  $("matchMessage").textContent = s;
+}
+
+function startMatch() {
+
+  if (match.active && !match.over) return;
+
+  if (match.clockId) clearInterval(match.clockId);
+
+  match = {
+    active:true,
+    over:false,
+    home:0,
+    away:0,
+    seconds:60,
+    clockId:null,
+    player:{x:50,y:72},
+    ball:{x:50,y:78},
+    opponents:randomOpponents(),
+    lastReward:0
+  };
+
+  $("score").textContent = "0 - 0";
+  $("clock").textContent = "60s";
+  $("awayName").textContent = "City FC";
+  $("homeName").textContent = state.club;
+
+  setMessage("Kick-off! Move toward the ball and press Shoot.");
+
+  drawPitch();
+
+  match.clockId = setInterval(() => {
+
+    if (!match.active || match.over) return;
+
+    match.seconds--;
+
+    $("clock").textContent = match.seconds + "s";
+
+    if (match.seconds <= 0) {
+      finishMatch();
+    }
+
+  }, 1000);
+}
+
+function finishMatch() {
+
+  if (match.over) return;
+
+  match.over = true;
+  match.active = false;
+
+  if (match.clockId) clearInterval(match.clockId);
+
+  state.played++;
+
+  let reward = 100 + (state.stadium - 1) * 75;
+
+  if (match.home > match.away) {
+
+    state.trophies++;
+    reward += 100;
+
+    setMessage(
+      `🏆 Full time! You won ${match.home}-${match.away}. +${reward} coins and 1 trophy!`
+    );
+
+  } else if (match.home === match.away) {
+
+    reward += 40;
+
+    setMessage(
+      `🤝 Full time: draw ${match.home}-${match.away}. +${reward} coins.`
+    );
+
+  } else {
+
+    setMessage(
+      `Full time: lost ${match.home}-${match.away}. You still earned ${reward} coins.`
+    );
+  }
+
+  state.coins += reward;
+
+  saveState();
+  renderAll();
+}
+
+function move(dx,dy) {
+
+  if (!match.active || match.over) {
+    setMessage("Start a match first.");
+    return;
+  }
+
+  match.player.x = Math.max(4, Math.min(96, match.player.x + dx));
+  match.player.y = Math.max(5, Math.min(96, match.player.y + dy));
+
+  if (
+    Math.hypot(
+      match.player.x - match.ball.x,
+      match.player.y - match.ball.y
+    ) < 9
+  ) {
+    match.ball.x = match.player.x + 2;
+    match.ball.y = match.player.y + 5;
+  }
+
+  drawPitch();
+}
+
+function actionShoot() {
+
+  if (!match.active || match.over) {
+    setMessage("Start a match first.");
+    return;
+  }
+
+  const distance = Math.hypot(
+    match.player.x - match.ball.x,
+    match.player.y - match.ball.y
+  );
+
+  if (distance > 20) {
+    setMessage("Move closer to the ball before shooting!");
+    return;
+  }
+
+  const teamBonus =
+    (avgRating() - 60) / 100 +
+    (state.formation === "attack" ? .12 :
+     state.formation === "defence" ? -.03 : 0) +
+    (state.style === "counter" ? .05 : 0);
+
+  const chance = Math.max(.12, Math.min(.82, .42 + teamBonus));
+
+  match.ball.x = 28 + Math.random() * 44;
+  match.ball.y = 5;
+
+  if (Math.random() < chance) {
+
+    match.home++;
+
+    setMessage("⚽ GOOOAL! What a finish!");
+
+  } else {
+
+    setMessage("🧤 Saved! Keep trying.");
+  }
+
+  $("score").textContent = match.home + " - " + match.away;
+
+  drawPitch();
+}
+
+function actionPass() {
+
+  if (!match.active || match.over) {
+    setMessage("Start a match first.");
+    return;
+  }
+
+  match.ball.x = Math.max(
+    10,
+    Math.min(90, match.player.x + (Math.random() - .5) * 24)
+  );
+
+  match.ball.y = Math.max(
+    20,
+    Math.min(85, match.player.y - 12)
+  );
+
+  setMessage("↗ Pass completed! Move to the ball.");
+
+  drawPitch();
+}
+
+/* MOBILE CONTROLS */
+
+document.querySelectorAll("[data-move]").forEach(b => {
+
+  b.addEventListener("click", () => {
+
+    const m = {
+      up:[0,-5],
+      down:[0,5],
+      left:[-5,0],
+      right:[5,0]
+    }[b.dataset.move];
+
+    move(...m);
+  });
+});
+
+/* KEYBOARD CONTROLS */
+
+document.addEventListener("keydown", e => {
+
+  if (![
+    "ArrowUp","ArrowDown","ArrowLeft","ArrowRight",
+    "w","a","s","d","W","A","S","D"," "
+  ].includes(e.key)) return;
+
+  if (!document.getElementById("match").classList.contains("active")) {
+    return;
+  }
+
+  if (e.target.matches("input,select,textarea")) return;
+
+  if (e.key === "ArrowUp" || e.key.toLowerCase() === "w") {
+    e.preventDefault();
+    move(0,-4);
+  }
+
+  if (e.key === "ArrowDown" || e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    move(0,4);
+  }
+
+  if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") {
+    e.preventDefault();
+    move(-4,0);
+  }
+
+  if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") {
+    e.preventDefault();
+    move(4,0);
+  }
+
+  if (e.key === " ") {
+    e.preventDefault();
+    actionShoot();
+  }
+});
+
+/* MATCH BUTTONS */
+
+$("startMatch").addEventListener("click", startMatch);
+$("shootBtn").addEventListener("click", actionShoot);
+$("passBtn").addEventListener("click", actionPass);
+
+$("restartMatch").addEventListener("click", () => {
+
+  if (match.clockId) clearInterval(match.clockId);
+
+  match.active = false;
+  match.over = false;
+
+  startMatch();
+});
+
+/* DIFFICULTY SETTING */
+
+$("difficulty").addEventListener("change", () => {
+  state.difficulty = $("difficulty").value;
+  saveState();
+});
+
+/* INITIALIZE GAME */
+
+function resetMatch() {
+
+  if (match.clockId) clearInterval(match.clockId);
+
+  match = {
+    active:false,
+    over:false,
+    home:0,
+    away:0,
+    seconds:60,
+    clockId:null,
+    player:{x:50,y:70},
+    ball:{x:50,y:78},
+    opponents:[],
+    lastReward:0
+  };
+
+  $("score").textContent = "0 - 0";
+  $("clock").textContent = "60s";
+  setMessage("Press Start Match to kick off.");
+}
+
+renderAll();
+$("difficulty").value = state.difficulty;
+drawPitch();
+
+})();
+</script>
+
+</body>
+</html>
